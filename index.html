@@ -182,81 +182,52 @@
     }
   </style>
 </head>
-const startBtn = document.getElementById('start-btn');
-const introTitle = document.getElementById('intro-title');
-const introMessage = document.getElementById('intro-message');
-const characterSelect = document.getElementById('character-select');
-const characterPrompt = document.getElementById('character-prompt');
-const memoryGame = document.getElementById('memory-game');
-const mazeGame = document.getElementById('maze-game');
-const dailyCodeChallenge = document.getElementById('daily-code-challenge');
-const guessingGame = document.getElementById('guessing-game');
-const typingGame = document.getElementById('typing-game');
-const finalMessage = document.getElementById('final-message');
-const gameBoard = document.getElementById('game-board');
-const mazeCanvas = document.getElementById('maze-canvas');
-const typingInput = document.getElementById('typing-input');
-const encounterMessage = document.getElementById('encounter-message');
-const guessingInput1 = document.getElementById('guessing-input1');
-const guessingInput2 = document.getElementById('guessing-input2');
-const guessingInput3 = document.getElementById('guessing-input3');
-const checkGuesses = document.getElementById('check-guesses');
-const blushMessage = document.getElementById('blush-message');
-const dailyCodeInput = document.getElementById('daily-code-input');
-const checkDailyCode = document.getElementById('check-daily-code');
-let cards = [
-  { id: 1, value: '❤️', flipped: false, matched: false },
-  { id: 2, value: '❤️', flipped: false, matched: false },
-  { id: 3, value: '🎂', flipped: false, matched: false }
-];
-let flippedCards = [];
-let gameState = 'start';
-let isDragging = false;
-let dragStartX, dragStartY;
-
-// Initial Intro Message
-window.onload = () => {
-  introMessage.textContent = "Ameilieeeee ingat eaaa game ni semua pasal kamu ✨";
-  setTimeout(() => {
-    introMessage.textContent = ""; // Clear intro message
-  }, 3000); // Display for 3 seconds
-};
-
-// Character Selection
-startBtn.addEventListener('click', () => {
-  startBtn.style.display = 'none';
-  introTitle.style.display = 'none'; // Hide title during character selection
-  introMessage.textContent = "sebelum tuuu, ameiliee! pilih character duluu, acah cah je ni ahaha:"; // Set character prompt
-  characterSelect.style.display = 'block';
-  gameState = 'character';
-});
-
-const dinoOption = document.getElementById('dino-option');
-const princessOption = document.getElementById('princess-option');
-
-dinoOption.addEventListener('click', () => {
-  characterSelect.style.display = 'none';
-  introMessage.style.display = 'none'; // Hide message after selection
-  memoryGame.style.display = 'block';
-  gameState = 'memory';
-  createMemoryBoard();
-});
-
-princessOption.addEventListener('click', () => {
-  encounterMessage.textContent = 'Princess untuk izara lah ameilie! 😏 mohon pilih semula....';
-  encounterMessage.style.color = '#ff6f91';
-  princessOption.style.display = 'none';
-  setTimeout(() => {
-    encounterMessage.textContent = 'Pilih semula character nya';
-    princessOption.style.display = 'block';
-  }, 3000);
-});
+<body>
+  <h1 id="intro-title">Hi there! ready for a little Migration adventure?</h1>
+  <p id="intro-message"></p>
+  <button id="start-btn">Start the Adventure</button>
+  <div id="character-select">
+    <p id="character-prompt"></p>
+    <span id="dino-option" class="character-option">Cute Dinosaur with Pink Ribbon</span>
+    <span id="princess-option" class="character-option">Pretty Princess</span>
+    <p id="encounter-message"></p>
+  </div>
+  <div id="memory-game">
+    <p>Tolong Dinosaur cari ❤️ pula pretty pleaseeee</p>
+    <div id="game-board"></div>
+  </div>
+  <div id="maze-game">
+    <p>Next bawa dia menusuri hiruk pikuk dunia 🫠</p>
+    <canvas id="maze-canvas" width="300" height="400"></canvas>
+  </div>
+  <div id="daily-code-challenge">
+    <p>Alamak ada password 😟 (Hint: 3rd digit is 6 )</p>
+    <input type="text" id="daily-code-input" maxlength="6" placeholder="Enter 6 digits...">
+    <button id="check-daily-code">Check Code</button>
+  </div>
+  <div id="guessing-game">
+    <p>Ini apa!? oh benda fav kamu rupanya 😌</p>
+    <p>1. Fav colour group kamu: <input type="text" id="guessing-input1" placeholder="Enter guess..."></p>
+    <p>2. Fav Cartoon movie: <input type="text" id="guessing-input2" placeholder="Enter guess..."></p>
+    <p>3. Favourite cardigan: <input type="text" id="guessing-input3" placeholder="Enter guess..."></p>
+    <button id="check-guesses">Check Answers</button>
+    <p id="blush-message">P.S. Every step here is crafted with love just for you, Ameilie! ❤️</p>
+  </div>
+  <div id="typing-game">
+    <p>UYOOOO dah sampai sini eh, mesti senang je kan game nya semua agagaga. Okay last, type nama kamu:</p>
+    <input type="text" id="typing-input" placeholder="Type here...">
+    <button onclick="checkTyping()">Submit</button>
+  </div>
+  <div id="final-message"></div>
+  <canvas id="confetti"></canvas>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script>
     const startBtn = document.getElementById('start-btn');
+    const introTitle = document.getElementById('intro-title');
     const introMessage = document.getElementById('intro-message');
     const characterSelect = document.getElementById('character-select');
+    const characterPrompt = document.getElementById('character-prompt');
     const memoryGame = document.getElementById('memory-game');
     const mazeGame = document.getElementById('maze-game');
     const dailyCodeChallenge = document.getElementById('daily-code-challenge');
@@ -284,9 +255,16 @@ princessOption.addEventListener('click', () => {
     let isDragging = false;
     let dragStartX, dragStartY;
 
+    // Initial Intro Message
+    window.onload = () => {
+      introMessage.textContent = "Ameilieeeee ingat eaaa game ni semua pasal kamu ✨"; // Set initial message
+    };
+
     // Character Selection
     startBtn.addEventListener('click', () => {
       startBtn.style.display = 'none';
+      introTitle.style.display = 'none'; // Hide title during character selection
+      introMessage.textContent = "sebelum tuuu, ameiliee! pilih character duluu, acah cah je ni ahaha:"; // Switch to character prompt
       characterSelect.style.display = 'block';
       gameState = 'character';
     });
@@ -296,7 +274,7 @@ princessOption.addEventListener('click', () => {
 
     dinoOption.addEventListener('click', () => {
       characterSelect.style.display = 'none';
-      introMessage.style.display = 'none'; // Remove intro message after selection
+      introMessage.style.display = 'none'; // Hide message after selection
       memoryGame.style.display = 'block';
       gameState = 'memory';
       createMemoryBoard();
@@ -471,8 +449,8 @@ princessOption.addEventListener('click', () => {
     // Guessing Game
     const correctAnswers = {
       1: ["Earth colour", "Earth tone"],
-      2: "Wild Robot",
-      3: "2nd Street",
+      2: ["Wild Robot", "The Wild Robot"],
+      3: ["2nd Street"]
     };
 
     checkGuesses.addEventListener('click', () => {
@@ -481,8 +459,8 @@ princessOption.addEventListener('click', () => {
       const guess3 = guessingInput3.value.trim().toLowerCase();
 
       if (correctAnswers[1].some(answer => answer.toLowerCase() === guess1) &&
-          guess2 === correctAnswers[2].toLowerCase() &&
-          guess3 === correctAnswers[3].toLowerCase()) {
+          correctAnswers[2].some(answer => answer.toLowerCase() === guess2) &&
+          correctAnswers[3].some(answer => answer.toLowerCase() === guess3)) {
         guessingGame.style.display = 'none';
         typingGame.style.display = 'block';
         gameState = 'typing';
