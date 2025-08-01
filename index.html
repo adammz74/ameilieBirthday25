@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kita main game sikittt boleh kan hihi!!</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to bottom, #fce2e6, #e6f0fa);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #333;
+      text-align: center;
+      padding: 20px 0;
+    }
+    h1 {
+      font-size: 2em;
+      color: #ff6f91;
+      margin-bottom: 15px;
+    }
+    p {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      max-width: 90%;
+    }
+    #character-select, #memory-game, #maze-game, #daily-code-challenge, #guessing-game, #typing-game, #final-message {
+      display: none;
+      width: 300px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .card {
+      width: 80px;
+      height: 80px;
+      background: #fff;
+      border: 2px solid #ff6f91;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .card.flipped, .card.matched {
+      background: #ffccde;
+      transform: rotateY(180deg);
+    }
+    .card.matched {
+      border-color: #4caf50;
+    }
+    #maze-canvas {
+      border: 2px solid #ff6f91;
+      border-radius: 10px;
+      background: #fff;
+    }
+    #daily-code-input {
+      padding: 10px;
+      font-size: 1em;
+      border: 2px solid #ff6f91;
+      border-radius: 5px;
+      margin: 5px 0;
+      width: 120px;
+      text-align: center;
+      letter-spacing: 5px;
+    }
+    #check-daily-code {
+      background: #ff6f91;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+    #check-daily-code:hover {
+      background: #e55a7a;
+    }
+    #guessing-input1, #guessing-input2, #guessing-input3 {
+      padding: 10px;
+      font-size: 1em;
+      border: 2px solid #ff6f91;
+      border-radius: 5px;
+      margin: 5px 0;
+      width: 200px;
+      text-align: center;
+    }
+    #check-guesses {
+      background: #ff6f91;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+    #check-guesses:hover {
+      background: #e55a7a;
+    }
+    #typing-input {
+      padding: 10px;
+      font-size: 1em;
+      border: 2px solid #ff6f91;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      width: 200px;
+      text-align: center;
+    }
+    #final-message {
+      font-size: 1.5em;
+      color: #ff6f91;
+      margin-top: 20px;
+      animation: fadeIn 1s;
+    }
+    #blush-message {
+      display: none;
+      font-size: 1.2em;
+      color: #ff6f91;
+      margin-top: 10px;
+      animation: blushFade 1.5s infinite alternate;
+    }
+    canvas#confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .character-option {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      background: #fff;
+      border: 2px solid #ff6f91;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      font-size: 1em;
+      color: #ff6f91;
+    }
+    .character-option:hover {
+      transform: scale(1.1);
+    }
+    #encounter-message {
+      margin-top: 10px;
+      color: #ff6f91;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes blushFade {
+      from { opacity: 0.7; }
+      to { opacity: 1; }
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5em; }
+      p { font-size: 1em; }
+      .card { width: 60px; height: 60px; font-size: 1.5em; }
+      #game-board { grid-template-columns: repeat(3, 60px); }
+      #maze-canvas { width: 280px; height: 400px; }
+      #character-select, #memory-game, #maze-game, #daily-code-challenge, #guessing-game, #typing-game, #final-message { width: 280px; padding: 15px; }
+      .character-option { padding: 8px 15px; font-size: 0.9em; }
+      #daily-code-input { width: 100px; }
+      #guessing-input1, #guessing-input2, #guessing-input3, #typing-input { width: 150px; }
+      button, #check-guesses, #check-daily-code { font-size: 0.9em; padding: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Hi there! ready for a little migration adventure?</h1>
+  <p id="intro-message">sebelum tuuu, ameiliee! Choose your guide:</p>
+  <button id="start-btn">Start the Adventure</button>
+  <div id="character-select">
+    <span id="dino-option" class="character-option">Cute Dinosaur with Pink Ribbon</span>
+    <span id="princess-option" class="character-option">Pretty Princess</span>
+    <p id="encounter-message"></p>
+  </div>
+  <div id="memory-game">
+    <p>Help your guide find the matching hearts ❤️ in the forest!</p>
+    <div id="game-board"></div>
+  </div>
+  <div id="maze-game">
+    <p>Guide your friend through the enchanted maze to the castle! 🎉</p>
+    <canvas id="maze-canvas" width="300" height="400"></canvas>
+  </div>
+  <div id="daily-code-challenge">
+    <p>Daily Code Challenge: Unlock the next step with your everyday key! (Hint: 3rd digit is 6)</p>
+    <input type="text" id="daily-code-input" maxlength="6" placeholder="Enter 6 digits...">
+    <button id="check-daily-code">Check Code</button>
+  </div>
+  <div id="guessing-game">
+    <p>Guess your favorite things to unlock the next step! 🎉</p>
+    <p>1. Fav colour group kamu: <input type="text" id="guessing-input1" placeholder="Enter guess..."></p>
+    <p>2. Fav Cartoon movie: <input type="text" id="guessing-input2" placeholder="Enter guess..."></p>
+    <p>3. Favourite cardigan: <input type="text" id="guessing-input3" placeholder="Enter guess..."></p>
+    <button id="check-guesses">Check Answers</button>
+    <p id="blush-message">P.S. Every step here is crafted with love just for you, Ameilie! ❤️</p>
+  </div>
+  <div id="typing-game">
+    <p>UYOOOO dah sampai sini eh, mesti senang je kan game nya semua agagaga. Okay last, type nama kamu:</p>
+    <input type="text" id="typing-input" placeholder="Type here...">
+    <button onclick="checkTyping()">Submit</button>
+  </div>
+  <div id="final-message"></div>
+  <canvas id="confetti"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const startBtn = document.getElementById('start-btn');
+    const introMessage = document.getElementById('intro-message');
+    const characterSelect = document.getElementById('character-select');
+    const memoryGame = document.getElementById('memory-game');
+    const mazeGame = document.getElementById('maze-game');
+    const dailyCodeChallenge = document.getElementById('daily-code-challenge');
+    const guessingGame = document.getElementById('guessing-game');
+    const typingGame = document.getElementById('typing-game');
+    const finalMessage = document.getElementById('final-message');
+    const gameBoard = document.getElementById('game-board');
+    const mazeCanvas = document.getElementById('maze-canvas');
+    const typingInput = document.getElementById('typing-input');
+    const encounterMessage = document.getElementById('encounter-message');
+    const guessingInput1 = document.getElementById('guessing-input1');
+    const guessingInput2 = document.getElementById('guessing-input2');
+    const guessingInput3 = document.getElementById('guessing-input3');
+    const checkGuesses = document.getElementById('check-guesses');
+    const blushMessage = document.getElementById('blush-message');
+    const dailyCodeInput = document.getElementById('daily-code-input');
+    const checkDailyCode = document.getElementById('check-daily-code');
+    let cards = [
+      { id: 1, value: '❤️', flipped: false, matched: false },
+      { id: 2, value: '❤️', flipped: false, matched: false },
+      { id: 3, value: '🎂', flipped: false, matched: false }
+    ];
+    let flippedCards = [];
+    let gameState = 'start';
+    let isDragging = false;
+    let dragStartX, dragStartY;
+
+    // Character Selection
+    startBtn.addEventListener('click', () => {
+      startBtn.style.display = 'none';
+      characterSelect.style.display = 'block';
+      gameState = 'character';
+    });
+
+    const dinoOption = document.getElementById('dino-option');
+    const princessOption = document.getElementById('princess-option');
+
+    dinoOption.addEventListener('click', () => {
+      characterSelect.style.display = 'none';
+      introMessage.style.display = 'none'; // Remove intro message after selection
+      memoryGame.style.display = 'block';
+      gameState = 'memory';
+      createMemoryBoard();
+    });
+
+    princessOption.addEventListener('click', () => {
+      encounterMessage.textContent = 'The princess giggles as a cute dinosaur with a pink ribbon nudges you back! 😄 Pick the dinosaur instead!';
+      encounterMessage.style.color = '#ff6f91';
+      princessOption.style.display = 'none';
+      setTimeout(() => {
+        encounterMessage.textContent = 'Choose your guide again!';
+        princessOption.style.display = 'block';
+      }, 3000);
+    });
+
+    // Memory Match Game
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function createMemoryBoard() {
+      shuffle(cards);
+      gameBoard.innerHTML = '';
+      cards.forEach(card => {
+        const cardElement = document.createElement('div');
+        cardElement.classList.add('card');
+        cardElement.dataset.id = card.id;
+        cardElement.addEventListener('click', () => flipCard(cardElement, card));
+        gameBoard.appendChild(cardElement);
+      });
+    }
+
+    function flipCard(cardElement, card) {
+      if (card.flipped || card.matched || flippedCards.length >= 2) return;
+      card.flipped = true;
+      cardElement.classList.add('flipped');
+      cardElement.textContent = card.value;
+      flippedCards.push({ element: cardElement, card });
+
+      if (flippedCards.length === 2) {
+        setTimeout(checkMatch, 1000);
+      }
+    }
+
+    function checkMatch() {
+      const [card1, card2] = flippedCards;
+      if (card1.card.value === card2.card.value) {
+        card1.card.matched = card2.card.matched = true;
+        card1.element.classList.add('matched');
+        card2.element.classList.add('matched');
+        setTimeout(() => {
+          memoryGame.style.display = 'none';
+          mazeGame.style.display = 'block';
+          gameState = 'maze';
+          startMazeGame();
+        }, 1000);
+      } else {
+        card1.card.flipped = card2.card.flipped = false;
+        card1.element.classList.remove('flipped');
+        card2.element.classList.remove('flipped');
+        card1.element.textContent = '';
+        card2.element.textContent = '';
+      }
+      flippedCards = [];
+    }
+
+    // Maze Game
+    const ctx = mazeCanvas.getContext('2d');
+    let player = { x: 20, y: 20, size: 20 };
+    const endPoint = { x: 260, y: 360 };
+    const walls = [
+      { x: 100, y: 0, width: 10, height: 100 },
+      { x: 100, y: 150, width: 100, height: 10 },
+      { x: 200, y: 150, width: 10, height: 250 }
+    ];
+
+    function drawMaze() {
+      ctx.clearRect(0, 0, mazeCanvas.width, mazeCanvas.height);
+      ctx.fillStyle = '#ff6f91';
+      walls.forEach(wall => {
+        ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
+      });
+      ctx.fillStyle = '#ffccde';
+      ctx.fillRect(endPoint.x, endPoint.y, 20, 20);
+      ctx.fillStyle = '#ff6f91';
+      ctx.beginPath();
+      ctx.arc(player.x + player.size / 2, player.y + player.size / 2, player.size / 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillText('❤️', player.x, player.y + player.size);
+    }
+
+    function startMazeGame() {
+      mazeCanvas.addEventListener('mousedown', startDragging);
+      mazeCanvas.addEventListener('mousemove', drag);
+      mazeCanvas.addEventListener('mouseup', stopDragging);
+      mazeCanvas.addEventListener('touchstart', startDragging, { passive: false });
+      mazeCanvas.addEventListener('touchmove', drag, { passive: false });
+      mazeCanvas.addEventListener('touchend', stopDragging);
+      drawMaze();
+    }
+
+    function startDragging(e) {
+      e.preventDefault();
+      isDragging = true;
+      const rect = mazeCanvas.getBoundingClientRect();
+      dragStartX = e.type.includes('touch') ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+      dragStartY = e.type.includes('touch') ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+      if (Math.abs(dragStartX - player.x) < player.size && Math.abs(dragStartY - player.y) < player.size) {
+        drawMaze();
+      }
+    }
+
+    function drag(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const rect = mazeCanvas.getBoundingClientRect();
+      let newX = e.type.includes('touch') ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+      let newY = e.type.includes('touch') ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+      newX = Math.max(0, Math.min(newX, mazeCanvas.width - player.size));
+      newY = Math.max(0, Math.min(newY, mazeCanvas.height - player.size));
+
+      let canMove = true;
+      walls.forEach(wall => {
+        if (newX < wall.x + wall.width && newX + player.size > wall.x &&
+            newY < wall.y + wall.height && newY + player.size > wall.y) {
+          canMove = false;
+        }
+      });
+
+      if (canMove) {
+        player.x = newX;
+        player.y = newY;
+        drawMaze();
+      }
+
+      if (Math.abs(player.x - endPoint.x) < player.size && Math.abs(player.y - endPoint.y) < player.size) {
+        mazeGame.style.display = 'none';
+        dailyCodeChallenge.style.display = 'block';
+        gameState = 'daily-code';
+        dailyCodeInput.value = ''; // Clear initial value on game start
+        dailyCodeInput.focus(); // Focus on input for immediate editing
+      }
+    }
+
+    function stopDragging() {
+      isDragging = false;
+    }
+
+    // Daily Code Challenge
+    dailyCodeInput.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/[^0-9]/g, ''); // Allow only numbers
+      if (value.length > 6) value = value.slice(0, 6); // Limit to 6 digits
+      e.target.value = value;
+    });
+
+    checkDailyCode.addEventListener('click', () => {
+      const dailyCode = dailyCodeInput.value;
+      if (dailyCode === '296223') {
+        dailyCodeChallenge.style.display = 'none';
+        guessingGame.style.display = 'block';
+        gameState = 'guessing';
+      } else {
+        alert('Oops! That’s not the right code. Hint: 3rd digit is 6. Try again!');
+        dailyCodeInput.value = '';
+        dailyCodeInput.focus();
+      }
+    });
+
+    // Guessing Game
+    const correctAnswers = {
+      1: ["Earth colour", "Earth tone"],
+      2: "Wild Robot",
+      3: "2nd Street"
+    };
+
+    checkGuesses.addEventListener('click', () => {
+      const guess1 = guessingInput1.value.trim().toLowerCase();
+      const guess2 = guessingInput2.value.trim().toLowerCase();
+      const guess3 = guessingInput3.value.trim().toLowerCase();
+
+      if (correctAnswers[1].some(answer => answer.toLowerCase() === guess1) &&
+          guess2 === correctAnswers[2].toLowerCase() &&
+          guess3 === correctAnswers[3].toLowerCase()) {
+        guessingGame.style.display = 'none';
+        typingGame.style.display = 'block';
+        gameState = 'typing';
+        blushMessage.style.display = 'block';
+        setTimeout(() => blushMessage.style.display = 'none', 3000);
+      } else {
+        alert('Not quite right! Try again with her favorites: Earth colour/Earth tone, Wild Robot, and 2nd Street.');
+        guessingInput1.value = '';
+        guessingInput2.value = '';
+        guessingInput3.value = '';
+      }
+    });
+
+    // Typing Game
+    function checkTyping() {
+      if (typingInput.value.toLowerCase() === 'nuraesha ameilie') {
+        typingGame.style.display = 'none';
+        finalMessage.textContent = ' HAPPPY BIRTHDAYY MYY AMEILIEEE !! ❤️‍🔥 - penat tak migration adventure tadiii ngehehe :3 anyway kamu dah 25 dah big strong gurl! - semoga semua yang kamu ingini dapat ditunaikan, andai tidak mungkin ada jalan yg lebih baik inshaAllah, semoga sentiasa kekal cantik manis comel ayu lemah lembut & sopann saja! - dan lastt hopefully kamu sentiasa dipertemukan dengan orang orang yg baik di surrounding kamu untuk lalui urusan harian, aminn - nanti kita pi celebrate ya adik cantik manis 😘    ❤️';
+        finalMessage.style.display = 'block';
+        gameState = 'finished';
+        launchConfetti();
+      } else {
+        typingInput.value = '';
+        typingInput.placeholder = 'Try again!';
+      }
+    }
+
+    // Confetti
+    function launchConfetti() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff6f91', '#fce2e6', '#e6f0fa']
+      });
+      setTimeout(() => {
+        if (gameState === 'finished') confetti({ particleCount: 50, spread: 50 });
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
