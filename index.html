@@ -183,7 +183,7 @@
   </style>
 </head>
 <body>
-  <h1>Hi there! ready for a little migration adventure?</h1>
+  <h1>Hi there! ready for a little Migration adventure?</h1>
   <p id="intro-message">sebelum tuuu, ameiliee! pilih character duluu, acah cah je ni ahaha:</p>
   <button id="start-btn">Start the Adventure</button>
   <div id="character-select">
@@ -192,15 +192,15 @@
     <p id="encounter-message"></p>
   </div>
   <div id="memory-game">
-    <p>Tolong Ribbon Dino cari ❤️ dalam adventure ni!</p>
+    <p>Tolong Dinosaur cari ❤️ pula pretty pleaseeee</p>
     <div id="game-board"></div>
   </div>
   <div id="maze-game">
-    <p>Next bawa dia menusuri hiruk pikuk dunia 🎉</p>
+    <p>Next bawa dia menusuri hiruk pikuk dunia 🫠</p>
     <canvas id="maze-canvas" width="300" height="400"></canvas>
   </div>
   <div id="daily-code-challenge">
-    <p>Alamak ada password 😟 (Hint: 3rd digit is 6 out of 6 number)</p>
+    <p>Alamak ada password 😟 (Hint: 3rd digit is 6 )</p>
     <input type="text" id="daily-code-input" maxlength="6" placeholder="Enter 6 digits...">
     <button id="check-daily-code">Check Code</button>
   </div>
@@ -275,7 +275,7 @@
       encounterMessage.style.color = '#ff6f91';
       princessOption.style.display = 'none';
       setTimeout(() => {
-        encounterMessage.textContent = 'Choose your guide again!';
+        encounterMessage.textContent = 'Pilih semula character nya';
         princessOption.style.display = 'block';
       }, 3000);
     });
@@ -430,7 +430,7 @@
         guessingGame.style.display = 'block';
         gameState = 'guessing';
       } else {
-        alert('Oops! That’s not the right code. Hint: 3rd digit is 6. Try again!');
+        alert('Salah ke tuuuu ngehe, hint lagi saya bagi- awak guna sentiasa dan sangat familiar');
         dailyCodeInput.value = '';
         dailyCodeInput.focus();
       }
@@ -439,7 +439,7 @@
     // Guessing Game
     const correctAnswers = {
       1: ["Earth colour", "Earth tone"],
-      2: "Wild Robot",
+      2: ["Wild Robot", "The Wild Robot"],
       3: "2nd Street"
     };
 
@@ -457,7 +457,7 @@
         blushMessage.style.display = 'block';
         setTimeout(() => blushMessage.style.display = 'none', 3000);
       } else {
-        alert('Aipppp salah tuu, cubaa dulu ni semua ez nau nau janji ✋.');
+        alert('Aipppp salah tuu, cubaa jee ni semua ez nau nau janji ✋.');
         guessingInput1.value = '';
         guessingInput2.value = '';
         guessingInput3.value = '';
